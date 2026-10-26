@@ -1,6 +1,6 @@
 import * as THREE from './vendor/three.module.js';
-import {Drive} from './rules.js?v=career3';
-import {createCareer,stars,offers,schools,practice,complete,commit,validCareer} from './career.js?v=career3';
+import {Drive} from './rules.js?v=career4';
+import {createCareer,stars,offers,schools,practice,complete,commit,validCareer} from './career.js?v=career4';
 const $=id=>document.getElementById(id), canvas=$('game');
 let renderer;
 try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});}catch(e){$('loading').textContent='This browser cannot start WebGL. Try a current Chrome, Safari, Firefox, or Edge with graphics enabled.';throw e;}
@@ -10,7 +10,7 @@ const camera=new THREE.PerspectiveCamera(52,innerWidth/innerHeight,.1,450);
 scene.add(new THREE.HemisphereLight(0xb5d5ff,0x32482a,2));
 const sun=new THREE.DirectionalLight(0xffdfb5,3);sun.position.set(-45,70,-30);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-80,right:80,top:80,bottom:-80,far:200});sun.shadow.bias=-.0004;scene.add(sun);
 const mats={};function mat(color,roughness=.75,metalness=0){const key=color+':'+roughness+':'+metalness;return mats[key]??=new THREE.MeshStandardMaterial({color,roughness,metalness});}
-const boxGeo=new THREE.BoxGeometry(1,1,1),sphereGeo=new THREE.SphereGeometry(1,14,10);
+const boxGeo=new THREE.BoxGeometry(1,1,1),sphereGeo=new THREE.SphereGeometry(1,20,14);
 function box(parent,x,y,z,sx,sy,sz,color){const m=new THREE.Mesh(boxGeo,mat(color));m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.receiveShadow=true;parent.add(m);return m;}
 function oval(parent,x,y,z,sx,sy,sz,color,metal=0){const m=new THREE.Mesh(sphereGeo,mat(color,.5,metal));m.position.set(x,y,z);m.scale.set(sx,sy,sz);m.castShadow=true;parent.add(m);return m;}
 function textTexture(text,color='#ffffff',bg=null,width=512,height=128){const c=document.createElement('canvas');c.width=width;c.height=height;const ctx=c.getContext('2d');if(bg){ctx.fillStyle=bg;ctx.fillRect(0,0,width,height);}ctx.fillStyle=color;ctx.font='900 '+Math.floor(height*.68)+'px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,width/2,height/2,width*.95);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;}
@@ -39,11 +39,11 @@ for(const side of [-1,1]){
 }
 box(scene,0,15,126,32,10,1,'#15202a');const stadiumBoard=new THREE.Mesh(new THREE.PlaneGeometry(30,8),new THREE.MeshBasicMaterial({map:textTexture('SATURDAY LIGHTS','#ffc275','#101c25',1024,256)}));stadiumBoard.position.set(0,15,125.4);stadiumBoard.rotation.y=Math.PI;scene.add(stadiumBoard);
 const lineScrim=box(scene,0,.04,25,53,.015,.07,'#4d9ad4'),lineGain=box(scene,0,.045,35,53,.015,.09,'#ffd05d');
-function segment(parent,x,y,z,top,bottom,height,depth,color){const m=new THREE.Mesh(new THREE.CylinderGeometry(top,bottom,height,6),mat(color));m.scale.z=depth/Math.max(top,bottom);m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m;}
+function segment(parent,x,y,z,top,bottom,height,depth,color){const m=new THREE.Mesh(new THREE.CylinderGeometry(top,bottom,height,12),mat(color));m.scale.z=depth/Math.max(top,bottom);m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m;}
 function makePlayer(defense,number,index){
  const root=new THREE.Group();scene.add(root);const skin=['#925a3d','#c68c66','#603b2c','#d3a582'][index%4],jersey=defense?'#e8e8df':'#872039',pants=defense?'#1c354d':'#e3ded0',helmet=defense?'#1e3b57':'#8a1d37';
  // Articulated anatomical forms: padded torso, shoulders, neck, helmet, arms, thighs, shins, gloves and cleats.
- segment(root,0,1.14,0,.29,.23,.58,.18,jersey);box(root,-.3,1.37,0,.28,.21,.36,jersey);box(root,.3,1.37,0,.28,.21,.36,jersey);segment(root,0,.83,0,.25,.22,.23,.17,pants);oval(root,0,1.53,0,.09,.12,.09,skin);
+ segment(root,0,1.14,0,.29,.23,.58,.18,jersey);segment(root,-.3,1.37,0,.17,.14,.21,.18,jersey);segment(root,.3,1.37,0,.17,.14,.21,.18,jersey);segment(root,0,.83,0,.25,.22,.23,.17,pants);oval(root,0,1.53,0,.09,.12,.09,skin);
  oval(root,0,1.77,0,.2,.235,.2,helmet,.25);oval(root,0,1.71,.12,.13,.13,.11,skin);box(root,0,1.8,.194,.26,.065,.045,'#131a20');
  for(const x of [-.16,.16]){box(root,x,1.66,.22,.025,.18,.025,'#c6c6bc');}box(root,0,1.6,.23,.32,.025,.025,'#c6c6bc');box(root,0,1.69,.24,.32,.022,.022,'#c6c6bc');box(root,0,1.94,.04,.04,.03,.28,'#eee7db');
  const limbs=[];for(const side of [-1,1]){
@@ -64,60 +64,72 @@ const games=['Season Opener','Rivalry Game','State Championship'];let bannerTime
 function formation(){
  carrier=0;flight=null;playState='ready';playTime=0;passPlay=false;playStart=drive.spot;
  players.forEach((p,i)=>{let x=0,z=drive.spot;if(i===0)z-=4;else if(i<6){x=(i-3)*1.5;z-=.6;}else if(i<9){x=[-20,18,-11][i-6];z-=1;}else if(i===9){x=4;z-=4;}else if(i===10){x=-3;z-=5;}else {const j=i-11;if(j<4){x=(j-1.5)*2;z+=1;}else if(j<7){x=(j-5)*6;z+=5;}else if(j<9){x=j===7?-20:18;z+=4;}else{x=j===9?-9:9;z+=15;}}
-  p.root.position.set(x,0,z);p.home.copy(p.root.position);p.root.rotation.set(0,i>=11?Math.PI:0,0);p.speed=0;
+  p.root.position.set(x,0,z);p.home.copy(p.root.position);p.root.rotation.set(0,i>=11?Math.PI:0,0);p.speed=0;p.velocity=new THREE.Vector3();
  });lineScrim.position.z=drive.spot;lineGain.position.z=drive.line;activeRing.visible=true;updateHUD();
 }
 function updateHUD(){
  $('home').textContent=drive.score;$('away').textContent=away;$('gameNo').textContent=gameIndex+1;const label=$('gameNo').parentElement;label.firstChild.textContent=careerActive&&career?.games>=3?'COLLEGE · GAME ':'HIGH SCHOOL · GAME ';
  const t=Math.max(0,Math.ceil(totalTime));$('clock').textContent=Math.floor(t/60)+':'+String(t%60).padStart(2,'0');
  $('down').textContent=['1ST','2ND','3RD','4TH'][drive.down-1]+' & '+Math.ceil(drive.line-drive.spot)+' · BALL ON '+Math.round(drive.spot);
- $('phase').textContent=paused?'PAUSED':playState==='ready'?'PRE-SNAP':playState==='live'?'LIVE PLAY':'DEAD BALL';$('target').textContent='TARGET: #'+players[6+selected].number;
- $('stats').textContent=`${Math.round(yards)} YDS · ${td} TD · ${comp}/${attempts} PASS`;
+ $('phase').textContent=paused?'PAUSED':playState==='ready'?'PRE-SNAP':playState==='live'?'LIVE PLAY':'DEAD BALL';$('target').textContent=role+' · '+Math.round(stamina*100)+'% STAMINA · TARGET #'+players[6+selected].number;
+ $('stats').textContent=(role==='LB'?gameTackles+' TKL · ':'')+`${Math.round(yards)} YDS · ${td} TD · ${comp}/${attempts} PASS`;
 }
-function start(){document.body.dataset.screen='play';mode='play';started=true;$('intro').hidden=true;$('summary').hidden=true;$('athlete').textContent=($('name').value.trim()||'Jordan Hayes').toUpperCase();formation();announce(games[gameIndex].toUpperCase(),2.3);}
+function start(){document.querySelector('.keys').children[2].innerHTML=role==='LB'?'<kbd>E</kbd> TACKLE':role==='WR'?'<kbd>1</kbd> CALL PASS':role==='RB'?'<kbd>WASD</kbd> FIND GAP':'<kbd>1 2 3</kbd> PASS';$('touch').querySelector('[data-action="1"]').textContent=role==='LB'?'TKL':'1';document.body.dataset.screen='play';mode='play';started=true;$('intro').hidden=true;$('summary').hidden=true;$('athlete').textContent=($('name').value.trim()||'Jordan Hayes').toUpperCase();const college=careerActive&&career.games>=3;const team=college?schools.find(s=>s.name===career.school):null;
+ document.querySelector('.home b').textContent=role==='LB'?'STATE':team?.name||'STATE';document.querySelector('.away b').textContent=role==='LB'?(team?.name||'VALLEY'):'VALLEY';
+ mat('#872039').color.set(team?.color||'#872039');mat('#1c354d').color.set(role==='LB'?(team?.color||'#1c354d'):'#1c354d');
+ formation();announce(role+' · '+games[gameIndex].toUpperCase(),2.3);$('athlete').nextElementSibling.textContent=role+' · '+roleDescriptions[role];}
 function snap(){if(mode!=='play'||paused||playState!=='ready')return;playState='live';playTime=0;updateHUD();beep(180,.1);}
 function throwBall(target){if(mode!=='play'||paused||playState!=='live'||carrier!==0||flight||passPlay)return;selected=target;passPlay=true;attempts++;const p=players[6+target];release=players[0].root.position.clone().add(new THREE.Vector3(.3,1.35,.3));const distance=release.distanceTo(p.root.position);const duration=Math.max(.45,Math.min(1.6,distance/23));let end=p.root.position.clone();end.z+=target===2?duration*4:duration*5;end.x+=target===0?duration*1.4:target===1?-duration*1.2:0;end.y=1.3;flight={start:release,end,t:0,duration,target:6+target};carrier=-1;updateHUD();beep(380,.06);}
 function finish(reason,incomplete=false,turnover=false){if(playState!=='live')return;let spot=carrier>=0?players[carrier].root.position.z:drive.spot;let gain=incomplete?0:spot-playStart;
  if(turnover){away+=7;drive.reset();}else {yards+=gain;gameYards+=gain;const outcome=drive.finish(spot,incomplete);if(outcome==='TOUCHDOWN'){td++;gameTD++;reason='TOUCHDOWN';beep(620,.4);}if(outcome==='SAFETY'){away+=2;reason='SAFETY';}if(outcome==='TURNOVER ON DOWNS'){away+=3;reason=outcome;}if(outcome==='FIRST DOWN'&&reason==='TACKLED')reason='FIRST DOWN';}
  playState='dead';deadTimer=2.4;flight=null;announce(reason,2.3);updateHUD();beep(720,.12);
 }
-function action(key){if(key==='p'&&mode==='play'){paused=!paused;announce(paused?'PAUSED':'PLAY RESUMED',paused?999:1);updateHUD();return;}if(key==='c'){wide=!wide;return;}if(key===' '||key==='snap')snap();if(['1','2','3'].includes(key))throwBall(Number(key)-1);}
-window.addEventListener('keydown',e=>{if(e.target instanceof HTMLInputElement)return;const k=e.key.toLowerCase();if([' ','arrowup','arrowdown','arrowleft','arrowright','tab'].includes(k))e.preventDefault();keys.add(k);if(!e.repeat){if(k==='tab'){selected=(selected+1)%3;updateHUD();}else action(k);}});
+function action(key){if(key==='1'&&role==='LB')key='e';if(key==='p'&&mode==='play'){paused=!paused;announce(paused?'PAUSED':'PLAY RESUMED',paused?999:1);updateHUD();return;}if(key==='c'){wide=!wide;return;}if(key===' '||key==='snap')snap();if(key==='e'&&mode==='play'&&!paused&&role==='LB'&&playState==='live'&&tackleCooldown===0){tackleCooldown=1.2;if(carrier>=0&&players[16].root.position.distanceTo(players[carrier].root.position)<1.5){gameTackles++;finish('TACKLE');}}if(['1','2','3'].includes(key)){if(role==='WR')throwBall(0);else if(role==='QB')throwBall(Number(key)-1);}}
+window.addEventListener('keydown',e=>{if(e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement)return;const k=e.key.toLowerCase();if([' ','arrowup','arrowdown','arrowleft','arrowright','tab'].includes(k))e.preventDefault();keys.add(k);if(!e.repeat){if(k==='tab'){selected=(selected+1)%3;updateHUD();}else action(k);}});
 window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>{keys.clear();if(started&&mode==='play'){paused=true;announce('PAUSED · PRESS P TO RESUME',999);updateHUD();}});
-$('start').onclick=()=>{careerActive=false;gameIndex=0;resetGame();start();};
+$('start').onclick=()=>{careerActive=false;role=$('position').value;gameIndex=0;resetGame();start();};
 $('pause').onclick=()=>{action('p');$('pause').textContent=paused?'RESUME':'PAUSE';};
-function endGame(){if(careerActive){complete(career,{yards:gameYards,td:gameTD,comp:gameComp,home:drive.score,away});saveCareer();}mode='summary';$('summary').hidden=false;recruit+=Math.max(0,gameYards)*.12+gameTD*12+gameComp*2+(drive.score>away?20:0);const stars=Math.max(1,Math.min(5,1+Math.floor(recruit/35)));$('resultTitle').textContent=gameIndex===2?'YOUR RECRUITING GRADE':games[gameIndex].toUpperCase();$('resultText').textContent=`${$('name').value.trim()||'Jordan Hayes'} · State ${drive.score} – Valley ${away}. ${Math.round(gameYards)} yards, ${gameTD} touchdowns. ${'★'.repeat(stars)}${'☆'.repeat(5-stars)} fictional prospect.${gameIndex===2?' Three challenges complete. This is a prototype grade, not a full recruiting simulation.':' Your next challenge is '+games[gameIndex+1]+'.'}`;if(careerActive){$('resultTitle').textContent=career.games<=3?'HIGH SCHOOL RESULT':'COLLEGE GAME RESULT';}
+function endGame(){if(careerActive){complete(career,{yards:role==='LB'?0:gameYards,td:role==='LB'?0:gameTD,comp:role==='LB'?0:gameComp,home:role==='LB'?away:drive.score,away:role==='LB'?drive.score:away,tackles:gameTackles});saveCareer();}mode='summary';$('summary').hidden=false;recruit+=Math.max(0,gameYards)*.12+gameTD*12+gameComp*2+(drive.score>away?20:0);const stars=Math.max(1,Math.min(5,1+Math.floor(recruit/35)));$('resultTitle').textContent=gameIndex===2?'YOUR RECRUITING GRADE':games[gameIndex].toUpperCase();$('resultText').textContent=`${$('name').value.trim()||'Jordan Hayes'} · ${document.querySelector('.home b').textContent} ${drive.score} – ${document.querySelector('.away b').textContent} ${away}. ${Math.round(gameYards)} yards, ${gameTD} touchdowns. ${'★'.repeat(stars)}${'☆'.repeat(5-stars)} fictional prospect.${gameIndex===2?' Three challenges complete. This is a prototype grade, not a full recruiting simulation.':' Your next challenge is '+games[gameIndex+1]+'.'}`;if(careerActive){$('resultTitle').textContent=career.games<=3?'HIGH SCHOOL RESULT':'COLLEGE GAME RESULT';}
 $('next').textContent=careerActive?'RETURN TO CAREER →':gameIndex===2?'PLAY AGAIN →':'NEXT GAME →';}
 $('next').onclick=()=>{if(careerActive){showHub();return;}if(gameIndex===2){gameIndex=0;recruit=0;td=comp=attempts=yards=0;}else gameIndex++;resetGame();start();};
 let career=null,careerActive=false;
-try{const saved=JSON.parse(localStorage.getItem('saturday-career-v1'));if(validCareer(saved))career=saved;}catch{}
+let role="QB",stamina=1,gameTackles=0;
+const roleDescriptions={QB:"Read coverage, pass with 1 / 2 / 3, or scramble. Shift sprints with limited stamina.",RB:"Take the handoff after the snap, find a gap, then use WASD to carry the ball. Shift sprints.",WR:"Run your own route with WASD. Press 1 to call for a pass after the snap. Catch automatically in range, then run.",LB:"Control the middle linebacker. Read the run, cover underneath, or blitz. Close on the ball carrier to tackle. E gives a short tackle reach with a miss cooldown."};
+let tackleCooldown=0;
+function athleteIndex(){return role==="LB"?16:role==="WR"?6:role==="RB"?10:0;}
+function controlledIndex(){return role==="QB"&&carrier>=0&&carrier<11?carrier:athleteIndex();}
+function selectCareerTab(tab){for(const t of ["Play","Recruitment","Player"])$("panel"+t).hidden=t!==tab;for(const b of document.querySelectorAll("[data-tab]"))b.setAttribute("aria-selected",String(b.dataset.tab===tab));}
+for(const b of document.querySelectorAll("[data-tab]"))b.onclick=()=>selectCareerTab(b.dataset.tab);
+try{const saved=JSON.parse(localStorage.getItem('saturday-career-v1'));if(saved){const legacy={'Pine Valley State':'Auburn','Lakeview Tech':'Florida','Coastal Union':'Texas','Redwood University':'Georgia'};saved.school=legacy[saved.school]||saved.school;saved.position||='QB';saved.tackles||=0;}if(validCareer(saved))career=saved;}catch{}
 $('careerContinue').hidden=!career;
 function saveCareer(){try{localStorage.setItem('saturday-career-v1',JSON.stringify(career));$('saveStatus').textContent='Progress saved in this browser after each completed game and coach meeting.';}catch{$('saveStatus').textContent='Browser storage unavailable. Keep this tab open to retain progress.';}}
-function resetGame(){gameYards=gameTD=gameComp=0;drive.score=0;drive.reset();away=0;totalTime=180;paused=false;keys.clear();}
+function resetGame(){stamina=1;gameTackles=0;gameYards=gameTD=gameComp=0;drive.score=0;drive.reset();away=0;totalTime=180;paused=false;keys.clear();}
 function home(){document.body.dataset.screen='intro';mode='intro';paused=false;$('intro').hidden=false;$('summary').hidden=true;$('careerHub').hidden=true;$('careerContinue').hidden=!career;}
 $('homeButton').onclick=()=>{if(mode==='play'&&!confirm('Return home? The current game will restart. Completed career games stay saved.'))return;home();};
 $('careerHome').onclick=home;
-$('careerStart').onclick=()=>{if(career&&!confirm('Start a new career and replace your saved career?'))return;career=createCareer($('name').value);careerActive=true;saveCareer();showHub();};
+$('careerStart').onclick=()=>{if(career&&!confirm('Start a new career and replace your saved career?'))return;career=createCareer($('name').value,$('position').value);careerActive=true;saveCareer();showHub();};
 $('careerContinue').onclick=()=>{careerActive=true;showHub();};
-function showHub(){document.body.dataset.screen='career';mode='career';paused=false;$('intro').hidden=true;$('summary').hidden=true;$('careerHub').hidden=false;$('careerTitle').textContent=career.name.toUpperCase();
+function showHub(){selectCareerTab(career.games===3&&!career.school?'Recruitment':'Play');document.body.dataset.screen='career';mode='career';paused=false;$('intro').hidden=true;$('summary').hidden=true;$('careerHub').hidden=false;$('careerTitle').textContent=career.name.toUpperCase();
  const college=career.games>=3,finished=career.games>=15,year=Math.min(4,Math.floor((career.games-3)/3)+1);
  $('careerStage').textContent=finished?'CAREER COMPLETE':!college?'HIGH SCHOOL · '+games[career.games]:!career.school?'NATIONAL SIGNING DAY':career.school+' · YEAR '+year+' · GAME '+((career.games-3)%3+1)+' / 3';
+ $('playerProfile').textContent=career.name+' · '+(career.position||'QB')+' · '+career.xp+' XP · '+(career.tackles||0)+' tackles · '+(career.school||'Uncommitted');$('roleHelp').textContent=roleDescriptions[career.position||'QB'];
  $('careerMetrics').textContent='★'.repeat(stars(career))+' · COACH TRUST '+career.trust+' / 100 · '+career.xp+' XP · '+career.wins+' WINS';
  const school=schools.find(s=>s.name===career.school);$('coachName').textContent=school?.coach||'Coach Morgan · State High School';
- $('coachMessage').textContent=finished?'You built your career one Saturday at a time. Keep working and carry these lessons forward.':career.trust>=65?'You have earned my trust. Keep your eyes downfield and turn completions into first downs.':'Protect the football. Read your three receivers before throwing. This week, aim for three completions.';
+ $('coachMessage').textContent=(career.position==='LB'&&!finished)?'Read your run gap first, then cover the underneath receiver. Aim for three tackles. Use E or the first touch action to attempt a tackle.':finished?'You built your career one Saturday at a time. Keep working and carry these lessons forward.':career.trust>=65?'You have earned my trust. Keep your eyes downfield and turn completions into first downs.':'Protect the football. Read your three receivers before throwing. This week, aim for three completions.';
  $('practice').disabled=career.practiced===career.games||finished;$('practice').textContent=career.practiced===career.games?'FILM SESSION COMPLETE':'FILM SESSION · +20 XP / +5 TRUST';
  const board=$('offers');board.replaceChildren();for(const s of schools){const row=document.createElement('div');row.className='offer';const title=document.createElement('b');title.textContent=s.name;const detail=document.createElement('p');const offered=offers(career).some(o=>o.name===s.name);detail.textContent=s.coach+' · '+s.style+' · '+(career.school===s.name?'COMMITTED':offered?'SCHOLARSHIP OFFER':'NEEDS '+s.need+' STARS');row.append(title,detail);if(career.games===3&&!career.school&&offered){const btn=document.createElement('button');btn.className='secondary';btn.textContent='COMMIT TO THIS SCHOOL';btn.onclick=()=>{if(commit(career,s.name)){saveCareer();showHub();}};row.append(btn);}board.append(row);}
- $('careerNote').textContent=finished?'Four condensed college seasons complete. Start a new career from Home.':college&&!career.school?'Choose an available scholarship to begin college. All schools and coaches are fictional.':'Play three high-school games to finalize your recruiting grade, then four condensed college seasons of three games each. This is a simplified career, not full college scheduling.';
+ $('careerNote').textContent=finished?'Four condensed college seasons complete. Start a new career from Home.':college&&!career.school?'Choose an available scholarship to begin college. Real college names; coaches and offers are fictional.':'Play three high-school games to finalize your recruiting grade, then four condensed college seasons of three games each. This is a simplified career, not full college scheduling.';
  $('careerPlay').disabled=finished||(college&&!career.school);$('careerPlay').textContent=college?'PLAY COLLEGE GAME →':'PLAY '+games[career.games].toUpperCase()+' →';
 }
 $('practice').onclick=()=>{if(practice(career)){saveCareer();showHub();}};
-$('careerPlay').onclick=()=>{careerActive=true;$('name').value=career.name;gameIndex=career.games<3?career.games:(career.games-3)%3;resetGame();$('careerHub').hidden=true;start();if(career.games>=3)announce(career.school+' · YEAR '+(Math.floor((career.games-3)/3)+1),2);};
+$('careerPlay').onclick=()=>{careerActive=true;role=career.position||'QB';$('name').value=career.name;gameIndex=career.games<3?career.games:(career.games-3)%3;resetGame();$('careerHub').hidden=true;start();if(career.games>=3)announce(career.school+' · YEAR '+(Math.floor((career.games-3)/3)+1),2);};
 
 for(const b of document.querySelectorAll('[data-key]')){b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keys.add(b.dataset.key);});for(const evt of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(evt,()=>keys.delete(b.dataset.key));}
 for(const b of document.querySelectorAll('[data-action]'))b.addEventListener('pointerdown',e=>{e.preventDefault();action(b.dataset.action);});
 $('sound').onclick=()=>{sound=!sound;if(sound&&!audio)audio=new (window.AudioContext||window.webkitAudioContext)();if(audio?.state==='suspended')audio.resume();$('sound').textContent=sound?'SOUND ON':'SOUND OFF';beep(440,.1);};
 function beep(hz,duration){if(!sound||!audio)return;const osc=audio.createOscillator(),g=audio.createGain();osc.connect(g);g.connect(audio.destination);osc.frequency.value=hz;g.gain.setValueAtTime(.045,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+duration);osc.start();osc.stop(audio.currentTime+duration);}
-const v=new THREE.Vector3();function move(p,x,z,speed,dt){v.set(x,0,z);if(v.lengthSq()>.001){v.normalize();p.root.position.addScaledVector(v,speed*dt);p.root.rotation.y=Math.atan2(v.x,v.z);p.speed=speed;}else p.speed=0;}
+const v=new THREE.Vector3();function move(p,x,z,speed,dt){v.set(x,0,z);if(v.lengthSq()>1)v.normalize();v.multiplyScalar(speed);p.velocity??=new THREE.Vector3();p.velocity.lerp(v,1-Math.exp(-dt*9));p.root.position.addScaledVector(p.velocity,dt);p.speed=p.velocity.length();if(p.speed>.1){const target=Math.atan2(p.velocity.x,p.velocity.z);const diff=Math.atan2(Math.sin(target-p.root.rotation.y),Math.cos(target-p.root.rotation.y));p.root.rotation.y+=diff*(1-Math.exp(-dt*12));}}
+
 function pursue(p,goal,speed,dt){const dx=goal.x-p.root.position.x,dz=goal.z-p.root.position.z;if(dx*dx+dz*dz>.12)move(p,dx,dz,speed,dt);else p.speed=0;}
 function step(dt,draw=true){
  if(bannerTimer>0){bannerTimer-=dt;if(bannerTimer<=0)$('banner').textContent='';}
@@ -125,14 +137,25 @@ function step(dt,draw=true){
  if(mode==='play'&&!paused){
  if(playState==='dead'){deadTimer-=dt;if(deadTimer<=0){if(totalTime<=0)endGame();else formation();}}
  if(playState==='live'){
- totalTime=Math.max(0,totalTime-dt);playTime+=dt;
+ totalTime=Math.max(0,totalTime-dt);playTime+=dt;tackleCooldown=Math.max(0,tackleCooldown-dt);stamina=THREE.MathUtils.clamp(stamina+(sprint?-.23:.15)*dt,0,1);
  let x=(keys.has('d')||keys.has('arrowright')?1:0)-(keys.has('a')||keys.has('arrowleft')?1:0)+ax,z=(keys.has('w')||keys.has('arrowup')?1:0)-(keys.has('s')||keys.has('arrowdown')?1:0)+az;
  const forward=new THREE.Vector3();camera.getWorldDirection(forward);forward.y=0;forward.normalize();const right=new THREE.Vector3().crossVectors(forward,camera.up).normalize();const direction=forward.multiplyScalar(z).addScaledVector(right,x);
- const controlled=carrier>=0?carrier:0;move(players[controlled],direction.x,direction.z,sprint?7.5:5.8,dt);players[controlled].root.position.x=THREE.MathUtils.clamp(players[controlled].root.position.x,-28,28);
- for(let i=1;i<11;i++){if(i===controlled)continue;const p=players[i];if(i<6){const defender=players[11+(i-1)%4];const maxZ=drive.spot+2;const goal=defender.root.position.clone();goal.z=Math.min(goal.z,maxZ);pursue(p,goal,3.7,dt);}else{const t=playTime;let goal=p.home.clone();if(flight?.target===i){goal.copy(flight.end);pursue(p,goal,6.3,dt);}else{goal.z+=Math.min(38,t*(i===8?5.3:6));goal.x+=i===6?Math.min(9,t*1.3):i===7?-Math.min(8,t):i===8?Math.min(12,Math.max(0,t-1.5)*3):i===9?-Math.min(14,t*2):Math.min(10,t*2);pursue(p,goal,5.5,dt);}}}
- for(let i=11;i<22;i++){const p=players[i];let goal;if(flight)goal=flight.end;else if(carrier>0||playTime>4||i<15)goal=players[Math.max(0,carrier)].root.position;else{goal=players[[6,7,8,6,7,8,9][(i-15)%7]].root.position.clone();goal.z+=2;}
- let speed=(i<15?3.9:5.25)+gameIndex*.25;
- if(i<15)for(let j=1;j<6;j++)if(p.root.position.distanceTo(players[j].root.position)<1.4){speed*=.35;break;}
+ const controlled=controlledIndex();move(players[controlled],direction.x,direction.z,sprint&&stamina>.05?6.4:5.5,dt);players[controlled].root.position.x=THREE.MathUtils.clamp(players[controlled].root.position.x,-28,28);
+ if(playTime>.55&&role==='RB'&&carrier===0&&!passPlay){carrier=10;passPlay=true;announce('HANDOFF · FIND THE GAP',1);}
+ if(role!=='QB'&&role!=='RB'&&carrier===0&&!flight&&playTime>2.3&&!passPlay)throwBall(role==='WR'?0:(gameIndex%3));
+ if(controlled!==0&&carrier===0&&!flight){const qb=players[0];pursue(qb,qb.home,4,dt);}
+ for(let i=1;i<11;i++){if(i===controlled)continue;const p=players[i];if(i===carrier){move(p,0,1,6.2,dt);continue;}if(i<6){const defender=players[11+(i-1)%4];const maxZ=drive.spot+2;const goal=defender.root.position.clone();goal.z=Math.min(goal.z,maxZ);pursue(p,goal,3.7,dt);}else{const t=playTime;let goal=p.home.clone();if(flight?.target===i){goal.copy(flight.end);pursue(p,goal,6.3,dt);}else{goal.z+=Math.min(38,t*(i===8?5.3:6));goal.x+=i===6?Math.min(9,t*1.3):i===7?-Math.min(8,t):i===8?Math.min(12,Math.max(0,t-1.5)*3):i===9?-Math.min(14,t*2):Math.min(10,t*2);pursue(p,goal,5.5,dt);}}}
+ for(let i=11;i<22;i++){if(i===controlled)continue;const p=players[i];let goal;const runner=players[Math.max(0,carrier)];
+ const isRun=carrier>0&&!flight;const qbScramble=carrier===0&&players[0].root.position.z>drive.spot+1;
+ if(isRun||qbScramble){const lead=Math.min(.6,p.root.position.distanceTo(runner.root.position)/20);goal=runner.root.position.clone().addScaledVector(runner.velocity||new THREE.Vector3(),lead);}
+ else if(i<15){goal=players[0].root.position.clone();if(i===11||i===14)goal.x+=(i===11?-2:2);}
+ else if(flight&&p.root.position.distanceTo(flight.end)<16&&playTime>.5){goal=flight.end;}
+ else if(i>=19){goal=p.home.clone();goal.z=Math.max(goal.z,players[6+(i-19)%3].root.position.z+4);goal.x=THREE.MathUtils.clamp(players[0].root.position.x,-12,12)+(i===19?-8:i===20?8:0);}
+ else if(i>=17){goal=players[i===17?6:7].root.position.clone();goal.z+=1.4;}
+ else{goal=p.home.clone();goal.x=THREE.MathUtils.clamp(players[0].root.position.x,-10,10);goal.z=Math.max(drive.spot+4,Math.min(drive.spot+10,players[8].root.position.z));}
+ let speed=i<15?5.6:6.45;
+ if(playTime<.25)speed=0;
+ if(i<15)for(let j=1;j<6;j++)if(p.root.position.distanceTo(players[j].root.position)<1.4){speed*=.58;break;}
  pursue(p,goal,speed,dt);
  }
  if(flight){flight.t+=dt;const a=Math.min(1,flight.t/flight.duration);ball.position.lerpVectors(flight.start,flight.end,a);ball.position.y+=Math.sin(a*Math.PI)*Math.max(2.5,flight.start.distanceTo(flight.end)*.16);ball.rotation.z+=dt*16;
@@ -140,13 +163,13 @@ function step(dt,draw=true){
    if(interceptor>=0&&players[target].root.position.distanceTo(new THREE.Vector3(flight.end.x,0,flight.end.z))>1.4){carrier=interceptor;flight=null;finish('INTERCEPTED',false,true);}else if(players[target].root.position.distanceTo(new THREE.Vector3(flight.end.x,0,flight.end.z))<2){carrier=target;comp++;gameComp++;flight=null;announce('CAUGHT · RUN WITH '+['WASD','THE LEFT STICK'][pad?1:0],1.2);beep(500,.08);}else{flight=null;finish('INCOMPLETE',true);}
   }
  }
- if(playState==='live'&&carrier>=0){const p=players[carrier].root.position;ball.position.copy(p).add(new THREE.Vector3(.26,1,.2));ball.rotation.set(.4,0,0);if(p.z>=100)finish('TOUCHDOWN');else if(p.z<=0)finish('SAFETY');else if(Math.abs(p.x)>26.67)finish('OUT OF BOUNDS');else if(playTime>.8){for(let i=11;i<22;i++)if(players[i].root.position.distanceTo(p)<.72){finish('TACKLED');break;}}}
+ if(playState==='live'&&carrier>=0){const p=players[carrier].root.position;ball.position.copy(p).add(new THREE.Vector3(.26,1,.2));ball.rotation.set(.4,0,0);if(p.z>=100)finish('TOUCHDOWN');else if(p.z<=0)finish('SAFETY');else if(Math.abs(p.x)>26.67)finish('OUT OF BOUNDS');else if(playTime>.8){for(let i=11;i<22;i++)if(players[i].root.position.distanceTo(p)<.78){if(role==='LB'&&i===16)gameTackles++;finish('TACKLED');break;}}}
  if(playState==='live'&&(playTime>18||totalTime<=0))finish(totalTime<=0?'FINAL WHISTLE':'PLAY CLOCK',flight!==null);
  updateHUD();
  }
  }
  if(playState==='ready')ball.position.copy(players[0].root.position).add(new THREE.Vector3(.25,1,.22));
- const focus=players[Math.max(0,carrier)].root.position;
+ const focus=players[controlledIndex()].root.position;
  for(const p of players){const run=playState==='live'&&!paused?p.speed:0;p.phase+=dt*run*2.7;const swing=Math.sin(p.phase)*Math.min(.85,run*.14);p.limbs[0].rotation.x=swing;p.limbs[2].rotation.x=-swing;p.limbs[1].rotation.x=-swing;p.limbs[3].rotation.x=swing;p.root.position.y=run?Math.abs(Math.sin(p.phase))* .035:0;}
  activeRing.position.set(focus.x,.04,focus.z);receiverRing.position.set(players[6+selected].root.position.x,.05,players[6+selected].root.position.z);
  for(let i=0;i<3;i++){routeLabels[i].position.copy(players[6+i].root.position).add(new THREE.Vector3(0,2.6,0));routeLabels[i].visible=mode==='play'&&carrier===0;}
@@ -162,6 +185,6 @@ for(const [material,meshes] of batches){const batch=new THREE.InstancedMesh(boxG
 formation();camera.position.set(42,22,4);$('loading').remove();let last=performance.now();function frame(now){const dt=Math.min(.04,(now-last)/1000);last=now;step(dt);requestAnimationFrame(frame);}requestAnimationFrame(frame);
 window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 // Read-only inspection for automated readiness checks; no developer controls in the player UI.
-window.football={get state(){return {mode,playState,paused,carrier,players:players.length,flight:!!flight,spot:drive.spot,down:drive.down,score:drive.score,attempts,comp,yards,time:totalTime,game:gameIndex+1,positions:players.map(p=>({x:p.root.position.x,z:p.root.position.z}))};}};
+window.football={get state(){return {mode,playState,paused,carrier,players:players.length,flight:!!flight,spot:drive.spot,down:drive.down,role,controlled:controlledIndex(),stamina,tackles:gameTackles,score:drive.score,attempts,comp,yards,time:totalTime,game:gameIndex+1,positions:players.map(p=>({x:p.root.position.x,z:p.root.position.z}))};}};
 
 export {step};
