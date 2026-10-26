@@ -3,7 +3,7 @@ export const schools=[
  ['Georgia',4,'#b01f36'],['Alabama',4,'#9e1b32'],['Ohio State',4,'#bb2438'],['Michigan',4,'#163957'],['Texas',3,'#bf6532'],['Oregon',3,'#146c48'],['LSU',3,'#58378c'],['Clemson',2,'#e65e26'],['Florida',2,'#2659ac'],['Tennessee',2,'#ef8b23'],['Auburn',1,'#243d60'],['Penn State',3,'#233954']
 ].map(([name,need,color])=>({name,need,color,coach:'Coach '+({Georgia:'Rivera',Alabama:'Ellis','Ohio State':'Brooks'}[name]||'Morgan')+' (fictional)',style:'Prototype scholarship · '+need+'-star threshold'}));
 export const positions=['QB','RB','WR','LB'];
-export function createCareer(name,position='QB'){return {version:1,position:positions.includes(position)?position:'QB',tackles:0,name:name.trim().slice(0,18)||'Jordan Hayes',games:0,trust:45,xp:0,points:0,school:null,practiced:-1,wins:0,log:[]};}
+export function createCareer(name,position='QB'){return {version:1,highSchool:'STATE',position:positions.includes(position)?position:'QB',tackles:0,name:name.trim().slice(0,18)||'Jordan Hayes',games:0,trust:45,xp:0,points:0,school:null,practiced:-1,wins:0,log:[]};}
 export function stars(c){return Math.min(5,Math.max(1,1+Math.floor(c.points/35)));}
 export function offers(c){return schools.filter(s=>stars(c)>=s.need);}
 export function practice(c){if(c.practiced===c.games||c.games>=15)return false;c.practiced=c.games;c.trust=Math.min(100,c.trust+5);c.xp+=20;return true;}
