@@ -1,6 +1,6 @@
 import * as THREE from './vendor/three.module.js';
-import {Drive} from './rules.js';
-import {createCareer,stars,offers,schools,practice,complete,commit,validCareer} from './career.js';
+import {Drive} from './rules.js?v=career3';
+import {createCareer,stars,offers,schools,practice,complete,commit,validCareer} from './career.js?v=career3';
 const $=id=>document.getElementById(id), canvas=$('game');
 let renderer;
 try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'});}catch(e){$('loading').textContent='This browser cannot start WebGL. Try a current Chrome, Safari, Firefox, or Edge with graphics enabled.';throw e;}
