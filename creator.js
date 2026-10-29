@@ -1,7 +1,7 @@
-import {archetypes,createCareer,playerAttributes} from './career.js?v=athlete8';
-import {normalizeProfile,defaultProfile,skinTones,profileSummary,physique} from './player-profile.js?v=athlete8';
-import {applyPlayerLook} from './presentation.js?v=athlete8';
-import {animateAthlete} from './motion.js?v=athlete8';
+import {archetypes,createCareer,playerAttributes} from './career.js?v=playfix9';
+import {normalizeProfile,defaultProfile,skinTones,profileSummary,physique} from './player-profile.js?v=playfix9';
+import {applyPlayerLook} from './presentation.js?v=playfix9';
+import {animateAthlete} from './motion.js?v=playfix9';
 const $=id=>document.getElementById(id);
 const fields=['hometown','state','jersey','heightInches','weightLbs','skinTone','build','helmetFinish','visor','gloves','sleeves','dominantHand'];
 export function createPlayerCreator(T,{renderer,environment,makeAthlete,onSave,onCancel}){

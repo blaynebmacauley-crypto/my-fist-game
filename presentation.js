@@ -1,4 +1,4 @@
-import {normalizeProfile,skinTones} from './player-profile.js?v=athlete8';
+import {normalizeProfile,skinTones} from './player-profile.js?v=playfix9';
 // Original procedural art for the browser prototype. No external textures/assets.
 const caches=new WeakMap();
 function assets(T){
@@ -8,11 +8,9 @@ function assets(T){
  const cloth=canvas(128),cc=cloth.getContext('2d');cc.fillStyle='#808080';cc.fillRect(0,0,128,128);for(let y=0;y<128;y+=4)for(let x=0;x<128;x+=4){cc.fillStyle=(x+y)%8?'#9b9b9b':'#666';cc.fillRect(x,y,2,3);}
  const fabric=new T.CanvasTexture(cloth);fabric.wrapS=fabric.wrapT=T.RepeatWrapping;fabric.repeat.set(6,5);
  const seams=canvas(128),pc=seams.getContext('2d');pc.fillStyle='#fff';pc.fillRect(0,0,128,128);pc.fillStyle='#e1e0dc';pc.fillRect(23,0,5,128);pc.fillRect(100,0,5,128);pc.fillStyle='#bfc0bc';for(let y=0;y<128;y+=8){pc.fillRect(23,y,1,4);pc.fillRect(104,y,1,4);}const pantsSeams=new T.CanvasTexture(seams);pantsSeams.colorSpace=T.SRGBColorSpace;
- const face=canvas(128),f=face.getContext('2d');f.clearRect(0,0,128,128);f.fillStyle='#2e201b';f.fillRect(22,39,27,4);f.fillRect(79,39,27,4);f.fillStyle='#d9d3c8';f.fillRect(27,47,16,5);f.fillRect(85,47,16,5);f.fillStyle='#161c23';f.fillRect(33,46,5,7);f.fillRect(89,46,5,7);f.strokeStyle='rgba(87,48,35,.65)';f.lineWidth=2;f.beginPath();f.moveTo(64,58);f.lineTo(60,77);f.lineTo(67,78);f.stroke();f.strokeStyle='rgba(70,37,27,.65)';f.lineWidth=2;f.beginPath();f.moveTo(54,95);f.lineTo(74,95);f.stroke();
- const faceTexture=new T.CanvasTexture(face);faceTexture.colorSpace=T.SRGBColorSpace;
  const glowCanvas=canvas(128),g=glowCanvas.getContext('2d'),gradient=g.createRadialGradient(64,64,0,64,64,64);gradient.addColorStop(0,'rgba(255,248,211,.75)');gradient.addColorStop(.14,'rgba(255,233,180,.28)');gradient.addColorStop(1,'rgba(255,212,135,0)');g.fillStyle=gradient;g.fillRect(0,0,128,128);
  const glow=new T.CanvasTexture(glowCanvas);glow.colorSpace=T.SRGBColorSpace;
- const a={canvas,random,fabric,pantsSeams,faceTexture,glow,sphere:new T.SphereGeometry(1,12,8),tubeMaterial:new T.MeshStandardMaterial({color:'#b8c2c8',roughness:.32,metalness:.65}),white:new T.MeshStandardMaterial({color:'#e9e5df',roughness:.7}),dark:new T.MeshStandardMaterial({color:'#16202b',roughness:.7}),neutral:new T.MeshStandardMaterial({color:'#ffffff',vertexColors:true,roughness:.68})};
+ const a={canvas,random,fabric,pantsSeams,glow,sphere:new T.SphereGeometry(1,12,8),tubeMaterial:new T.MeshStandardMaterial({color:'#b8c2c8',roughness:.32,metalness:.65}),white:new T.MeshStandardMaterial({color:'#e9e5df',roughness:.7}),dark:new T.MeshStandardMaterial({color:'#16202b',roughness:.7}),neutral:new T.MeshStandardMaterial({color:'#ffffff',vertexColors:true,roughness:.68}),eyeWhite:new T.MeshStandardMaterial({color:'#c9c0b6',roughness:.6}),eyeDark:new T.MeshStandardMaterial({color:'#29231e',roughness:.55}),brow:new T.MeshStandardMaterial({color:'#392b24',roughness:.9}),lip:new T.MeshStandardMaterial({color:'#644537',roughness:.85})};
  caches.set(T,a);return a;
 }
 function ellipsoid(T,parent,geometry,material,p,s){const m=new T.Mesh(geometry,material);m.position.set(...p);m.scale.set(...s);m.castShadow=true;parent.add(m);return m;}
@@ -93,7 +91,24 @@ export function enhanceAthlete(T,player){
  curved(T,root,[[-.16,1.7,.18],[-.17,1.6,.26],[0,1.58,.28],[.17,1.6,.26],[.16,1.7,.18]],.011,a.tubeMaterial);
  for(const x of [-.1,.1])curved(T,root,[[x,1.74,.245],[x,1.67,.29],[x*.9,1.59,.28]],.009,a.tubeMaterial);
  curved(T,root,[[0,1.63,-.17],[0,1.87,-.18],[0,2.005,.015],[0,1.91,.2]],.018,a.white);
- const face=new T.Mesh(new T.PlaneGeometry(.24,.2),new T.MeshBasicMaterial({map:a.faceTexture,transparent:true,depthWrite:false}));face.position.set(0,1.73,.239);root.add(face);
+ // Small opaque features follow the curved skin surface. There is no flat
+ // facial decal or floating rectangle in front of the helmet opening.
+ const skinSurface=root.children.find(m=>m.isMesh&&Math.abs(m.position.y-1.71)<.01&&Math.abs(m.position.z-.12)<.01);
+ const faceSkin=skinSurface?.material||new T.MeshStandardMaterial({color:'#925a3d',roughness:.7});
+ const faceZ=(x,y)=>.12+.11*Math.sqrt(Math.max(.03,1-(x/.13)**2-((y-1.71)/.13)**2));
+ for(const side of [-1,1]){
+  const x=side*.043,y=1.752,z=faceZ(x,y);
+  ellipsoid(T,root,a.sphere,a.eyeWhite,[x,y,z+.001],[.014,.006,.0035]);
+  ellipsoid(T,root,a.sphere,a.eyeDark,[x,y,z+.004],[.0048,.0049,.0017]);
+  const browPoints=[[-.016,.001],[0,.004],[.016,.001]].map(([dx,dy])=>[x+dx,1.768+dy,faceZ(x+dx,1.768+dy)+.0015]);
+  curved(T,root,browPoints,.0019,a.brow);
+  ellipsoid(T,root,a.sphere,faceSkin,[side*.123,1.704,.103],[.013,.023,.013]);
+ }
+ ellipsoid(T,root,a.sphere,faceSkin,[0,1.725,.229],[.011,.022,.013]);
+ ellipsoid(T,root,a.sphere,faceSkin,[0,1.704,.24],[.014,.009,.012]);
+ for(const x of [-.007,.007])ellipsoid(T,root,a.sphere,a.brow,[x,1.699,.248],[.0025,.0015,.001]);
+ const mouth=new T.CatmullRomCurve3([new T.Vector3(-.021,1.671,faceZ(-.021,1.671)+.001),new T.Vector3(0,1.669,faceZ(0,1.669)+.001),new T.Vector3(.021,1.671,faceZ(.021,1.671)+.001)]);
+ const lip=new T.Mesh(new T.TubeGeometry(mouth,8,.0016,4,false),a.lip);lip.userData.lookRole='lip';root.add(lip);
  ellipsoid(T,root,a.sphere,a.white,[0,1.58,.14],[.08,.035,.06]);
  // Rounded kneepads, sock bands and cleat soles move with the original rig.
  for(const i of [1,3]){
@@ -104,7 +119,7 @@ export function enhanceAthlete(T,player){
   const side=i===0?0:1,wrist=player.rig?.elbows?.[side]||limbs[i];ellipsoid(T,wrist,a.sphere,a.dark,[0,player.rig?.elbows?.[side]?.isGroup?-.16:-.46,.035],[.083,.027,.083]);
  }
  // Mark editable surfaces before neutral batching; all other athletes retain
- // their shared default materials. Number/face meshes stay transparent.
+ // their shared default materials. Numbers stay transparent; faces are opaque.
  const skinPalette=new Set(['925a3d','c68c66','603b2c','d3a582']);
  const numbers=[];
  root.traverse(m=>{
@@ -134,7 +149,8 @@ export function applyPlayerLook(T,player,rawProfile,{teamColor='#872039'}={}){
  const profile=normalizeProfile(rawProfile),a=assets(T),look=player.root.userData.playerLook;
  if(!look)return player;
  const skin=new T.Color(skinTones.find(t=>t.id===profile.skinTone)?.color||'#925a3d'),team=new T.Color(teamColor),glove=new T.Color(profile.gloves==='black'?'#18212b':profile.gloves==='team'?teamColor:'#efeee8');
- const colorFor=role=>role==='skin'?skin:role==='gloves'?glove:role==='upperArm'?(profile.sleeves==='none'?skin:team):role==='lowerArm'?(profile.sleeves==='long'?team:skin):null;
+ const lip=skin.clone().multiplyScalar(.58);
+ const colorFor=role=>role==='skin'?skin:role==='lip'?lip:role==='gloves'?glove:role==='upperArm'?(profile.sleeves==='none'?skin:team):role==='lowerArm'?(profile.sleeves==='long'?team:skin):null;
  player.root.traverse(m=>{
   if(!m.isMesh||!m.material)return;
   const ranges=m.geometry.userData.lookRanges,colors=m.geometry.getAttribute('color');

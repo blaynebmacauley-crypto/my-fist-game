@@ -53,7 +53,7 @@ export function resetAthletePose(player){
 }
 
 /** Speed-blended running, bent elbows, stance feet, knee recovery and ball tuck. */
-export function animateAthlete(T,player,{dt=.016,time=0,speed=0,live=false,ballCarrier=false,blocking=false,settled=false,turn=0,handedness='right'}={}){
+export function animateAthlete(T,player,{dt=.016,time=0,speed=0,live=false,ballCarrier=false,blocking=false,settled=false,turn=0,stumble=0,handedness='right'}={}){
  if(!player.rig)prepareAthleteRig(T,player);
  dt=clamp(dt,0,.1);speed=live?clamp(speed,0,8):0;
  const state=player.motionState,desired=clamp(speed/2,0,1);
@@ -83,6 +83,7 @@ export function animateAthlete(T,player,{dt=.016,time=0,speed=0,live=false,ballC
  if(!live&&blend<.01){
   player.root.position.y=Math.sin((Number.isFinite(time)?time:0)*1.8+player.index)*.002;
  }
+ if(stumble>0&&live){const wobble=Math.sin((1-stumble)*13)*Math.min(1,stumble*3);player.root.rotation.z+=wobble*.17;player.root.rotation.x+=.14*Math.min(1,stumble*3);}
  player.phase=state.phase;
  return player;
 }
