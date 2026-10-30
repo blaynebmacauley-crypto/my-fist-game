@@ -1,4 +1,4 @@
-import {normalizeProfile,skinTones} from './player-profile.js?v=playfix9';
+import {normalizeProfile,skinTones} from './player-profile.js?v=playmaker10';
 // Original procedural art for the browser prototype. No external textures/assets.
 const caches=new WeakMap();
 function assets(T){

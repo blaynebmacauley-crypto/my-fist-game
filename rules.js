@@ -5,6 +5,19 @@ function finite(value, name) {
  return value;
 }
 
+/** Crossing the scrimmage line removes forward-pass eligibility for the down. */
+export function forwardPassAllowed({passerZ, scrimmageZ, crossed = false}) {
+ finite(passerZ, 'Passer position'); finite(scrimmageZ, 'Scrimmage position');
+ return !crossed && passerZ <= scrimmageZ;
+}
+
+/** A short lateral cut spends stamina and must recover before another attempt. */
+export function skillMove({speed = 65, stamina = 1, cooldown = 0, active = false} = {}) {
+ finite(speed, 'Skill speed'); finite(stamina, 'Skill stamina'); finite(cooldown, 'Skill cooldown');
+ if (stamina < .18 || cooldown > 0 || active) return null;
+ return {duration: .38, cooldown: 2.4, cost: .18, distance: clamp(1.1 + clamp(speed, 0, 100) * .0055, 1.1, 1.65)};
+}
+
 /** Live runner boundary checks. Entering the own end zone alone is not a safety. */
 export function liveBoundary({x, z, hasBall = true}) {
  finite(x, 'Runner x'); finite(z, 'Runner z');

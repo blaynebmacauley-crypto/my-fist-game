@@ -67,3 +67,46 @@ export function defensiveAlignment(idOrObject='4-3',spot=25){
   return player;
  });
 }
+
+function defenderSlot(index){
+ if(!Number.isInteger(index)||index<11||index>21)throw new RangeError('Defender index must be 11 through 21');
+ return index-11;
+}
+
+/** Stagger the read step so the entire defense does not move on one frame. */
+export function defensiveReaction(index,playNumber=0){
+ const slot=defenderSlot(index);
+ if(!Number.isFinite(playNumber))throw new TypeError('Play number must be finite');
+ const variation=((slot*7+Math.floor(playNumber)*3)%11+11)%11/10;
+ return clamp((index<15?.2:index<18?.29:.38)+variation*.2,.2,.65);
+}
+
+/** Chase present movement with limited anticipation and different pursuit lanes.
+ * Returns a destination only: movement, collisions and speed remain in the game.
+ */
+export function pursuitTarget({index,runner,defender,spot=25,elapsed=0}){
+ const slot=defenderSlot(index),vx=runner?.vx??0,vz=runner?.vz??0;
+ for(const value of [runner?.x,runner?.z,defender?.x,defender?.z,vx,vz,spot,elapsed])if(!Number.isFinite(value))throw new TypeError('Pursuit coordinates and time must be finite');
+ const distance=Math.hypot(runner.x-defender.x,runner.z-defender.z);
+ // Near contact, everyone aims for the runner. Farther away, distinct lanes
+ // leave cutback opportunities and keep the defense from forming one train.
+ const spacing=clamp((distance-1.3)/7,0,1),read=clamp((elapsed-.12)/.55,0,1);
+ const cap=index<15?.24:index<18?.42:.62;
+ const lead=Math.min(cap,distance/16)*read;
+ const lateral=clamp(vx,-8,8),forward=clamp(vz,-8,8);
+ const side=defender.x===runner.x?(slot%2?-1:1):Math.sign(defender.x-runner.x);
+ let leverage;
+ if(index<15){
+  // Front players protect their side of a developing run before turning upfield.
+  leverage=side*(runner.z<spot+4?.55:.2);
+ }else if(index<18){
+  leverage=side*(.25+(slot%3)*.12);
+ }else{
+  // The secondary takes an inside angle and uses the boundary as support.
+  leverage=-Math.sign(runner.x)*(.6+(slot%3)*.13);
+ }
+ return {
+  x:clamp(runner.x+lateral*lead+leverage*spacing,-26,26),
+  z:clamp(runner.z+forward*lead,-8,108)
+ };
+}
