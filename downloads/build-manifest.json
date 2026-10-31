@@ -1,0 +1,58 @@
+{
+  "engine": "Godot 4.6.3 stable",
+  "template_version": "4.6.3.stable",
+  "artifacts": {
+    "SaturdayLights-Windows.zip": {
+      "bytes": 36989885,
+      "sha256": "be12ce1ac1f8b420ef259313c14e74f773db3455564947f6f7c4853ec36ffd76",
+      "platform": "Windows",
+      "export": "release",
+      "runtime_tested_by_packager": false
+    },
+    "SaturdayLights-Linux.zip": {
+      "bytes": 28203809,
+      "sha256": "f09da17293bca9a8ed7559d1f774e62af065759650be4864b2f1ebdcf9b7cffd",
+      "platform": "Linux",
+      "export": "release",
+      "runtime_tested_by_packager": false
+    },
+    "SaturdayLights-Source.zip": {
+      "bytes": 466249,
+      "sha256": "730ecd901277e8e5782e3f536f88f002955d3f2247d9c8b027c4dfdf90b4bb1c",
+      "platform": "Godot project source"
+    }
+  },
+  "template_provenance": {
+    "godot_version": "4.6.3-stable",
+    "archive_url": "https://github.com/godotengine/godot-builds/releases/download/4.6.3-stable/Godot_v4.6.3-stable_export_templates.tpz",
+    "archive_bytes": 1255918323,
+    "verification": "Official HTTPS release URL and ZIP member CRC; SHA-256 recorded per extracted member. Whole-archive digest not verified because unrelated platform data was not downloaded.",
+    "files": {
+      "windows_release_x86_64.exe": {
+        "bytes": 104659456,
+        "zip_crc32": "9b972102",
+        "sha256": "91724f15024a3a545e28ccd83134403d31ce2323a38e51c95e4dfa282f732ab6"
+      },
+      "linux_release.x86_64": {
+        "bytes": 71075864,
+        "zip_crc32": "428f40f8",
+        "sha256": "2c78919325d7f29fa7607287c7c1eeac367ea4c94e7b8b6f5f4c6b20492f73d0"
+      }
+    },
+    "official_archive_sha512": "da606b61c10157844f8300172df374472665f95015495cb1a7cd132c40ede404faa96cc1016a4b9662db9909ddea69632c4948b2cd11163438dad4808881fb68",
+    "official_digest_note": "Recorded from official release checksums; full archive digest not verified for selective range fetch."
+  },
+  "validation": {
+    "native_gameplay_checks": 262,
+    "native_career_checks": 73,
+    "linux_release_runtime": {
+      "passed": true,
+      "method": "Extracted distributed ZIP, launched its executable and PCK on Linux, rendered OpenGL game viewport to PNG"
+    },
+    "windows_release_runtime": {
+      "tested": false,
+      "export": "Official Windows x86-64 template exported on Linux; PE architecture and ZIP CRC verified"
+    },
+    "zip_crc_verified": true
+  }
+}

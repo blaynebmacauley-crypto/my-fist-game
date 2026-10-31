@@ -1,0 +1,3 @@
+f09da17293bca9a8ed7559d1f774e62af065759650be4864b2f1ebdcf9b7cffd  SaturdayLights-Linux.zip
+730ecd901277e8e5782e3f536f88f002955d3f2247d9c8b027c4dfdf90b4bb1c  SaturdayLights-Source.zip
+be12ce1ac1f8b420ef259313c14e74f773db3455564947f6f7c4853ec36ffd76  SaturdayLights-Windows.zip
