@@ -1,4 +1,5 @@
-import {normalizeProfile,skinTones} from './player-profile.js?v=playmaker10';
+import {applyAthleteVisualLook} from './athlete-visuals.js?v=broadcast12';
+import {normalizeProfile,skinTones} from './player-profile.js?v=broadcast12';
 // Original procedural art for the browser prototype. No external textures/assets.
 const caches=new WeakMap();
 function assets(T){
@@ -167,6 +168,7 @@ export function applyPlayerLook(T,player,rawProfile,{teamColor='#872039'}={}){
  look.teamColor=teamColor;setJerseyNumber(T,player,profile.jersey);
  look.visor.visible=profile.visor!=='none';look.visor.material.opacity=profile.visor==='smoke'?.74:.16;look.visor.material.color.set(profile.visor==='smoke'?'#172735':'#9bb2bf');
  player.number=profile.jersey;player.root.userData.appliedProfile={...profile};
+ if(player.importedVisual)applyAthleteVisualLook(T,player,profile,{teamColor});
  return player;
 }
 export function setJerseyNumber(T,player,number){

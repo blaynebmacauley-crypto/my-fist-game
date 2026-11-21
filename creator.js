@@ -1,7 +1,8 @@
-import {archetypes,createCareer,playerAttributes} from './career.js?v=playmaker10';
-import {normalizeProfile,defaultProfile,skinTones,profileSummary,physique} from './player-profile.js?v=playmaker10';
-import {applyPlayerLook} from './presentation.js?v=playmaker10';
-import {animateAthlete} from './motion.js?v=playmaker10';
+import {updateAthleteVisual} from './athlete-visuals.js?v=broadcast12';
+import {archetypes,createCareer,playerAttributes} from './career.js?v=broadcast12';
+import {normalizeProfile,defaultProfile,skinTones,profileSummary,physique} from './player-profile.js?v=broadcast12';
+import {applyPlayerLook} from './presentation.js?v=broadcast12';
+import {animateAthlete} from './motion.js?v=broadcast12';
 const $=id=>document.getElementById(id);
 const fields=['hometown','state','jersey','heightInches','weightLbs','skinTone','build','helmetFinish','visor','gloves','sleeves','dominantHand'];
 export function createPlayerCreator(T,{renderer,environment,makeAthlete,onSave,onCancel}){
@@ -25,7 +26,7 @@ export function createPlayerCreator(T,{renderer,environment,makeAthlete,onSave,o
   const floor=new T.Mesh(new T.CylinderGeometry(1,1.08,.12,64),new T.MeshStandardMaterial({color:'#1c2d3c',roughness:.45,metalness:.3}));floor.position.y=.06;studio.add(floor);
   const ring=new T.Mesh(new T.TorusGeometry(.95,.012,8,80),new T.MeshBasicMaterial({color:'#ffbc65'}));ring.rotation.x=Math.PI/2;ring.position.y=.13;studio.add(ring);
   const contact=new T.Mesh(new T.CircleGeometry(.48,48),new T.MeshBasicMaterial({color:'#000000',transparent:true,opacity:.22,depthWrite:false}));contact.rotation.x=-Math.PI/2;contact.position.y=.124;contact.scale.y=.55;studio.add(contact);
-  preview=makeAthlete();studio.add(preview.root);camera=new T.PerspectiveCamera(32,1,.05,30);camera.position.set(2.7,1.6,4.3);camera.lookAt(0,1.08,0);
+  preview=makeAthlete();studio.add(preview.root);camera=new T.PerspectiveCamera(32,1,.05,30);camera.position.set(1.4,1.45,4.15);camera.lookAt(0,1.05,0);
  }
  for(const tone of skinTones){const o=document.createElement('option');o.value=tone.id;o.textContent=tone.label;$('create_skinTone').append(o);}
  $('createPosition').onchange=()=>{positionOptions();refresh();};$('createArchetype').onchange=refresh;
@@ -37,11 +38,11 @@ export function createPlayerCreator(T,{renderer,environment,makeAthlete,onSave,o
  const api={
   open(data={},options={}){active=true;editing=!!options.editing;step=0;angle=.18;buildStudio();const p=normalizeProfile(data.profile||defaultProfile());$('createName').value=data.name||'Jordan Hayes';$('createPosition').value=data.position||'QB';positionOptions(data.archetype);for(const f of fields)$('create_'+f).value=p[f];$('createPosition').disabled=editing;$('createArchetype').disabled=editing;$('creator').hidden=false;setStep(0);},
   close(){active=false;$('creator').hidden=true;},
-  render(dt,draw=true){if(!active)return;clock+=dt;animateAthlete(T,preview,{dt,time:clock,speed:0,live:false,ballCarrier:false,blocking:false,settled:false,turn:0});preview.root.position.set(0,.12+Math.sin(clock*1.8)*.003,0);preview.root.rotation.set(0,angle,0);
+  render(dt,draw=true){if(!active)return;clock+=dt;animateAthlete(T,preview,{dt,time:clock,speed:0,live:false,ballCarrier:false,blocking:false,settled:false,turn:0});if(preview.importedVisual)updateAthleteVisual(T,preview,{dt,speed:0,live:false,handedness:values().dominantHand});preview.root.position.set(0,.12+Math.sin(clock*1.8)*.003,0);preview.root.rotation.set(0,angle,0);
    if(!draw)return;const r=$('creatorPreview').getBoundingClientRect();if(r.width<1||r.height<1)return;
    camera.aspect=r.width/r.height;camera.updateProjectionMatrix();renderer.setScissorTest(false);renderer.setViewport(0,0,innerWidth,innerHeight);renderer.setClearColor('#0b1620',1);renderer.clear();renderer.setViewport(r.left,innerHeight-r.bottom,r.width,r.height);renderer.setScissor(r.left,innerHeight-r.bottom,r.width,r.height);renderer.setScissorTest(true);renderer.render(studio,camera);renderer.setScissorTest(false);renderer.setViewport(0,0,innerWidth,innerHeight);
   },
-  get state(){return {active,editing,step,angle,preview:preview?{number:preview.number,scale:preview.root.scale.toArray(),appliedProfile:{...preview.root.userData.appliedProfile}}:null,profile:active?values():null,name:$('createName').value,position:$('createPosition').value,archetype:$('createArchetype').value};}
+  get state(){return {active,editing,step,angle,preview:preview?{number:preview.number,scale:preview.root.scale.toArray(),appliedProfile:{...preview.root.userData.appliedProfile},imported:!!preview.importedVisual,visual:{meshCount:preview.importedVisual?.meshCount||0,clips:preview.importedVisual?.clips||[]}}:null,profile:active?values():null,name:$('createName').value,position:$('createPosition').value,archetype:$('createArchetype').value};}
  };
  return api;
 }

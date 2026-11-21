@@ -1,0 +1,11 @@
+{
+  "name": "saturday-lights-browser",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "test:browser": "node tests/broadcast.smoke.cjs",
+    "serve": "python3 -m http.server 8091 --bind 0.0.0.0"
+  },
+  "devDependencies": {"playwright": "1.51.1"}
+}

@@ -1,21 +1,104 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><link rel="icon" href="data:,"><title>Saturday Lights · Football</title><link rel="stylesheet" href="style.css?v=playmaker10hud"></head><body>
-<div id="loading">Turning on the stadium lights…</div><canvas id="game" aria-label="3D football field"></canvas>
-<header><a class="brand" href="#">SL<span> SATURDAY LIGHTS</span></a><span class="tag">ROAD TO GLORY · FICTIONAL ROSTERS</span><nav><button id="homeButton">HOME</button><button id="pause">PAUSE</button><button id="sound">SOUND OFF</button></nav></header>
-<div id="scoreboard"><div class="team home"><small>HOME</small><b>STATE</b><strong id="home">0</strong></div><div class="clock"><small>HIGH SCHOOL · GAME <span id="gameNo">1</span> / 3</small><b id="clock">3:00</b><span id="down">1ST & 10 · BALL ON 25</span></div><div class="team away"><strong id="away">0</strong><b>VALLEY</b><small>AWAY</small></div></div>
-<div id="status"><span class="dot"></span><span id="phase">PRE-SNAP</span><span id="target">TARGET: #81</span></div>
-<div id="playPicker" hidden><label>OFFENSIVE PLAY<select id="offensePlay"></select></label><label>DEFENSIVE FORMATION<select id="defensePlay"></select></label><small id="formationRead"></small></div><button id="callBall" hidden>CALL FOR BALL <small>1 / GAMEPAD X</small></button><button id="skillButton" hidden>JUKE <small id="skillHint">Q · E / RB</small></button><div id="driveFeed" role="status" hidden></div><div id="banner" role="status"></div>
-<div id="intro" class="overlay"><div class="card"><div class="eyebrow">PLAYMAKER UPDATE · V10</div><h1>EARN YOUR<br><em>SATURDAY.</em></h1><p>Build your story. Meet your coach, earn scholarship offers, choose a college, and play four condensed seasons.</p><div class="features"><span>11 ON 11</span><span>PASS & SCRAMBLE</span><span>NO INSTALL</span></div><label>ATHLETE NAME<input id="name" maxlength="18" value="Jordan Hayes" aria-label="Athlete name"></label><label>POSITION<select id="position"><option>QB</option><option>RB</option><option>WR</option><option>LB</option></select></label><label>ARCHETYPE<select id="archetype"></select></label><small id="archetypeDescription"></small><button id="careerStart" class="primary">CREATE YOUR ATHLETE →</button><button id="careerContinue" class="secondary" hidden>CONTINUE CAREER →</button><button id="start" class="primary">QUICK PLAY <span>→</span></button><a href="downloads/" style="display:block;margin:12px 0;color:#8ce0d9;font-size:12px">DOWNLOAD THE NATIVE PC EDITION →</a><small>QB · RB · WR · LB · simplified football rules<br>Keyboard, touch & gamepad · fictional rosters</small></div></div>
-<div id="creator" class="overlay" hidden><div class="creator-shell"><div class="creator-heading"><div class="eyebrow">BUILD YOUR ROAD TO GLORY</div><h2>CREATE YOUR ATHLETE</h2><p>Take your time. Preview every choice before you enter your career.</p></div><nav class="creator-steps" aria-label="Player creation steps"><button data-creator-step="0" aria-selected="true">1 · IDENTITY</button><button data-creator-step="1">2 · POSITION</button><button data-creator-step="2">3 · LOOK & GEAR</button><button data-creator-step="3">4 · REVIEW</button></nav><div class="creator-body"><div class="creator-form">
-<section id="creatorStep0"><h3>WHO ARE YOU?</h3><label>ATHLETE NAME<input id="createName" maxlength="18" value="Jordan Hayes"></label><div class="creator-fields"><label>HOMETOWN<input id="create_hometown" maxlength="32"></label><label>STATE<input id="create_state" maxlength="2"></label><label>JERSEY NUMBER<input id="create_jersey" type="number" min="1" max="99"></label><label>DOMINANT HAND<select id="create_dominantHand"><option value="right">Right</option><option value="left">Left</option></select></label></div><p>Your home team is State High School throughout your three high-school games.</p></section>
-<section id="creatorStep1" hidden><h3>FIND YOUR GAME</h3><label>POSITION<select id="createPosition"><option value="QB">QB · Quarterback</option><option value="RB">RB · Running Back</option><option value="WR">WR · Wide Receiver</option><option value="LB">LB · Linebacker</option></select></label><label>ARCHETYPE<select id="createArchetype"></select></label><p id="createArchetypeNote"></p><div class="creator-fields"><label>HEIGHT (INCHES)<input id="create_heightInches" type="number" min="66" max="80"></label><label>WEIGHT (LB)<input id="create_weightLbs" type="number" min="165" max="285"></label></div><label>ATHLETIC BUILD<select id="create_build"><option value="lean">Lean</option><option value="balanced">Balanced</option><option value="power">Power</option></select></label><p>Measurements change your appearance. Archetypes shape your starting skills.</p></section>
-<section id="creatorStep2" hidden><h3>MAKE IT YOURS</h3><label>SKIN TONE<select id="create_skinTone"></select></label><div class="creator-fields"><label>HELMET FINISH<select id="create_helmetFinish"><option value="gloss">Gloss</option><option value="matte">Matte</option></select></label><label>VISOR<select id="create_visor"><option value="clear">Clear</option><option value="smoke">Smoke</option><option value="none">None</option></select></label><label>GLOVES<select id="create_gloves"><option value="white">White</option><option value="black">Black</option><option value="team">Team color</option></select></label><label>SLEEVES<select id="create_sleeves"><option value="none">None</option><option value="short">Short</option><option value="long">Long</option></select></label></div><p>Turn the model to check your gear from every angle.</p></section>
-<section id="creatorStep3" hidden><h3>READY FOR YOUR FIRST SNAP?</h3><p id="creatorReview"></p><h3>STARTING RATINGS</h3><p id="creatorRatings"></p><p>Save your athlete, meet your coach, and choose when to play. You can edit your appearance later in My Player.</p></section>
-</div><div id="creatorPreview" class="creator-preview" aria-label="Live 3D athlete preview"><div class="preview-label">LIVE ATHLETE PREVIEW</div><div class="preview-controls"><button id="rotateLeft" aria-label="Rotate athlete left">↶</button><button id="rotateFront">FRONT</button><button id="rotateRight" aria-label="Rotate athlete right">↷</button></div><p id="creatorMeasurements"></p></div></div><div class="creator-actions"><button id="creatorBack" class="secondary">CANCEL</button><button id="creatorNext" class="primary">NEXT →</button></div></div></div>
-<div id="careerHub" class="overlay" hidden><div class="hub"><div class="eyebrow">ROAD TO GLORY</div><h2 id="careerTitle"></h2><p id="careerStage"></p><div id="careerMetrics" class="metrics"></div>
-<div id="panelPlay" class="career-panel"><section><h3>GAME WEEK</h3><p id="careerNote"></p><button id="careerPlay" class="primary">PLAY NEXT GAME →</button></section><section><h3>COACH’S OFFICE</h3><b id="coachName"></b><p id="coachMessage"></p><button id="practice" class="secondary">FILM SESSION</button><small>One meeting per game week.</small></section></div>
-<div id="panelRecruitment" class="career-panel" hidden><h3>RECRUITMENT</h3><p>Real college names. All offers, coaches, players and uniforms are fictional prototype representations, not official school content.</p><div id="offers"></div></div>
-<div id="panelPlayer" class="career-panel" hidden><h3>MY PLAYER</h3><div id="playerProfile"></div><p id="appearanceSummary"></p><button id="editAppearance" class="secondary">EDIT ATHLETE APPEARANCE →</button><p id="roleHelp"></p><h3 id="developmentTitle"></h3><p id="upgradeNote"></p><div id="upgrades"></div><button id="careerHome" class="secondary">BACK TO HOME</button><small id="saveStatus"></small></div>
-<nav id="careerTabs" aria-label="Career sections"><button data-tab="Play" aria-selected="true">PLAY</button><button data-tab="Recruitment" aria-selected="false">RECRUITMENT</button><button data-tab="Player" aria-selected="false">MY PLAYER</button></nav></div></div><div id="summary" class="overlay" hidden><div class="card"><div class="eyebrow">THE NEXT CHAPTER</div><h2 id="resultTitle">FINAL WHISTLE</h2><p id="resultText"></p><button id="next" class="primary">CONTINUE →</button></div></div>
-<footer><div><b id="athlete">J. HAYES</b><span>QB · UNRANKED PROSPECT</span></div><div class="keys"><span><kbd>W A S D</kbd> MOVE</span><span><kbd>SPACE</kbd> SNAP</span><span><kbd>1 2 3</kbd> PASS</span><span><kbd>SHIFT</kbd> SPRINT</span><span><kbd>Q / E</kbd> JUKE</span><span><kbd>C</kbd> CAMERA</span><span><kbd>P</kbd> PAUSE</span></div><div id="stats">0 YDS · 0 TD · 0 COMP</div></footer>
-<div id="touch"><div class="dpad"><button data-key="w">W</button><div><button data-key="a">A</button><button data-key="s">S</button><button data-key="d">D</button></div></div><div class="actions"><button data-action="snap">SNAP</button><button data-action="1">1</button><button data-action="2">2</button><button data-action="3">3</button></div></div>
-<script type="module" src="game.js?v=playmaker10"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07151f">
+  <meta name="description" content="Play Saturday Lights football in your browser. Create an athlete, take the field, and build your Road to Glory.">
+  <link rel="icon" href="data:,">
+  <title>Saturday Lights · Road to Glory</title>
+  <link rel="stylesheet" href="style.css?v=broadcast12">
+</head>
+<body data-screen="intro">
+  <div id="loading" role="status"><span class="loading-mark">SL</span><span>Turning on the stadium lights…</span></div>
+  <canvas id="game" aria-label="3D football field"></canvas>
+
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Saturday Lights"><span class="brand-mark">SL</span><span class="brand-name">SATURDAY LIGHTS<small>ROAD TO GLORY</small></span></a>
+    <span class="tag">YOUR PLAYER. YOUR NEXT CHAPTER.</span>
+    <nav aria-label="Game controls"><button id="homeButton" type="button">HOME</button><button id="pause" type="button">PAUSE</button><button id="sound" type="button">SOUND OFF</button></nav>
+  </header>
+
+  <div id="scoreboard" aria-label="Game scoreboard">
+    <div class="team home"><small>HOME</small><b>STATE</b><strong id="home">0</strong></div>
+    <div class="clock"><small>HIGH SCHOOL · GAME <span id="gameNo">1</span> / 3</small><b id="clock">3:00</b><span id="down">1ST &amp; 10 · BALL ON 25</span></div>
+    <div class="team away"><strong id="away">0</strong><b>VALLEY</b><small>AWAY</small></div>
+    <div class="scorebug-ticker"><span class="broadcast-badge">SL <i></i> LIVE</span><span id="stats">0 YDS · 0 TD · 0 COMP</span></div>
+  </div>
+  <div id="status"><span class="dot"></span><span id="phase">PRE-SNAP</span><span id="target">QB · READ THE DEFENSE</span></div>
+  <div id="playPicker" hidden>
+    <div class="playcall-heading"><span>THE PLAY CALL</span><span>SPACE TO SNAP</span></div>
+    <label>OFFENSIVE PLAY<select id="offensePlay" aria-label="Offensive play"></select></label>
+    <label>DEFENSIVE FRONT<select id="defensePlay" aria-label="Defensive formation"></select></label>
+    <small id="formationRead"></small>
+  </div>
+  <div class="ability-controls">
+    <button id="callBall" type="button" hidden>CALL FOR BALL <small>1 / GAMEPAD X</small></button>
+    <button id="skillButton" type="button" hidden>JUKE <small id="skillHint">Q · E / PAD RB</small></button>
+  </div>
+  <div id="driveFeed" role="status" hidden></div>
+  <div id="banner" role="status"></div>
+
+  <main id="intro" class="overlay">
+    <div class="lobby-grid">
+      <section class="lobby-hero" aria-labelledby="lobbyTitle">
+        <div class="eyebrow">BROADCAST UPDATE · V12</div>
+        <div class="hero-rule"></div>
+        <h1 id="lobbyTitle">EVERY SNAP.<br>YOUR STORY.<br><em>SATURDAY.</em></h1>
+        <p class="hero-copy">From an unranked high-school prospect to your college colors. Step onto the field and earn your next chapter.</p>
+        <div class="features"><span>11 ON 11</span><span>4 POSITIONS</span><span>PLAY IN BROWSER</span></div>
+        <div class="lobby-footnote"><span class="live-dot"></span> No install. Keyboard, controller or touch.</div>
+      </section>
+      <section class="card lobby-setup" aria-labelledby="lobbySetupTitle">
+        <div class="section-kicker">THE FIELD IS YOURS</div>
+        <h2 id="lobbySetupTitle">TAKE THE FIELD</h2>
+        <p class="setup-copy">Choose your position for a quick game, or create an athlete for your Road to Glory.</p>
+        <label for="name">ATHLETE NAME<input id="name" maxlength="18" value="Jordan Hayes" autocomplete="off"></label>
+        <div class="setup-fields">
+          <label for="position">POSITION<select id="position"><option value="QB">QB · Quarterback</option><option value="RB">RB · Running Back</option><option value="WR">WR · Wide Receiver</option><option value="LB">LB · Linebacker</option></select></label>
+          <label for="archetype">PLAY STYLE<select id="archetype"></select></label>
+        </div>
+        <small id="archetypeDescription"></small>
+        <button id="start" class="primary" type="button">QUICK PLAY <span aria-hidden="true">→</span></button>
+        <button id="careerStart" class="secondary" type="button">CREATE YOUR ATHLETE <span aria-hidden="true">→</span></button>
+        <button id="careerContinue" class="secondary continue-button" type="button" hidden>CONTINUE CAREER <span aria-hidden="true">→</span></button>
+        <div class="asset-state"><span id="assetStatus" role="status">Preparing the stadium and athlete models…</span><button id="assetRetry" type="button" hidden>RETRY ASSETS</button></div>
+        <small class="prototype-note">Original athletes and uniforms · fictional rosters<br>Three high-school games. Four condensed college seasons.</small>
+      </section>
+    </div>
+  </main>
+
+  <div id="creator" class="overlay" hidden>
+    <div class="creator-shell">
+      <div class="creator-heading"><div class="eyebrow">BUILD YOUR ROAD TO GLORY</div><h2>CREATE YOUR ATHLETE</h2><p>Take your time. Make every detail yours before your first snap.</p></div>
+      <nav class="creator-steps" aria-label="Player creation steps"><button data-creator-step="0" aria-selected="true" type="button">1 <span>IDENTITY</span></button><button data-creator-step="1" aria-selected="false" type="button">2 <span>POSITION</span></button><button data-creator-step="2" aria-selected="false" type="button">3 <span>LOOK &amp; GEAR</span></button><button data-creator-step="3" aria-selected="false" type="button">4 <span>REVIEW</span></button></nav>
+      <div class="creator-body">
+        <div class="creator-form">
+          <section id="creatorStep0"><div class="section-kicker">01 / IDENTITY</div><h3>WHO ARE YOU?</h3><label>ATHLETE NAME<input id="createName" maxlength="18" value="Jordan Hayes" autocomplete="off"></label><div class="creator-fields"><label>HOMETOWN<input id="create_hometown" maxlength="32" autocomplete="address-level2"></label><label>STATE<input id="create_state" maxlength="2" autocomplete="address-level1"></label><label>JERSEY NUMBER<input id="create_jersey" type="number" min="1" max="99" inputmode="numeric"></label><label>DOMINANT HAND<select id="create_dominantHand"><option value="right">Right</option><option value="left">Left</option></select></label></div><p class="form-note">You represent State High School for all three high-school games.</p></section>
+          <section id="creatorStep1" hidden><div class="section-kicker">02 / POSITION</div><h3>FIND YOUR GAME</h3><label>POSITION<select id="createPosition"><option value="QB">QB · Quarterback</option><option value="RB">RB · Running Back</option><option value="WR">WR · Wide Receiver</option><option value="LB">LB · Linebacker</option></select></label><label>ARCHETYPE<select id="createArchetype"></select></label><p id="createArchetypeNote"></p><div class="creator-fields"><label>HEIGHT (INCHES)<input id="create_heightInches" type="number" min="66" max="80" inputmode="numeric"></label><label>WEIGHT (LB)<input id="create_weightLbs" type="number" min="165" max="285" inputmode="numeric"></label></div><label>ATHLETIC BUILD<select id="create_build"><option value="lean">Lean</option><option value="balanced">Balanced</option><option value="power">Power</option></select></label><p class="form-note">Measurements shape your appearance. Your archetype sets your starting skills.</p></section>
+          <section id="creatorStep2" hidden><div class="section-kicker">03 / EQUIPMENT</div><h3>MAKE IT YOURS</h3><label>SKIN TONE<select id="create_skinTone"></select></label><div class="creator-fields"><label>HELMET FINISH<select id="create_helmetFinish"><option value="gloss">Gloss</option><option value="matte">Matte</option></select></label><label>VISOR<select id="create_visor"><option value="clear">Clear</option><option value="smoke">Smoke</option><option value="none">None</option></select></label><label>GLOVES<select id="create_gloves"><option value="white">White</option><option value="black">Black</option><option value="team">Team color</option></select></label><label>SLEEVES<select id="create_sleeves"><option value="none">None</option><option value="short">Short</option><option value="long">Long</option></select></label></div><p class="form-note">Turn the athlete to check your uniform from every angle.</p></section>
+          <section id="creatorStep3" hidden><div class="section-kicker">04 / REVIEW</div><h3>YOUR NEXT CHAPTER</h3><p id="creatorReview"></p><h3 class="ratings-heading">STARTING RATINGS</h3><p id="creatorRatings"></p><p class="form-note">Save your athlete, meet your coach and play when you are ready. Appearance can be edited later.</p></section>
+        </div>
+        <div id="creatorPreview" class="creator-preview" aria-label="Live 3D athlete preview"><div class="preview-label"><span class="live-dot"></span> LIVE ATHLETE PREVIEW</div><div class="preview-controls"><button id="rotateLeft" aria-label="Rotate athlete left" type="button">↶</button><button id="rotateFront" type="button">FRONT</button><button id="rotateRight" aria-label="Rotate athlete right" type="button">↷</button></div><p id="creatorMeasurements"></p></div>
+      </div>
+      <div class="creator-actions"><button id="creatorBack" class="secondary" type="button">CANCEL</button><button id="creatorNext" class="primary" type="button">NEXT <span aria-hidden="true">→</span></button></div>
+    </div>
+  </div>
+
+  <div id="careerHub" class="overlay" hidden>
+    <div class="hub">
+      <div class="career-heading"><div class="eyebrow">YOUR ROAD TO GLORY</div><h2 id="careerTitle"></h2><p id="careerStage"></p><div id="careerMetrics" class="metrics"></div></div>
+      <div id="panelPlay" class="career-panel"><section class="game-week"><div class="section-kicker">THE NEXT OPPORTUNITY</div><h3>GAME WEEK</h3><p id="careerNote"></p><button id="careerPlay" class="primary" type="button">PLAY NEXT GAME <span aria-hidden="true">→</span></button></section><section><div class="section-kicker">GET BETTER EVERY WEEK</div><h3>COACH’S OFFICE</h3><b id="coachName"></b><p id="coachMessage"></p><button id="practice" class="secondary" type="button">FILM SESSION</button><small>One coach meeting per game week.</small></section></div>
+      <div id="panelRecruitment" class="career-panel" hidden><div class="panel-intro"><div class="section-kicker">FIND YOUR NEXT HOME</div><h3>RECRUITMENT</h3><p>Track the programs watching your career. Offers, coaches, players and uniform designs are fictional.</p></div><div id="offers"></div></div>
+      <div id="panelPlayer" class="career-panel" hidden><div class="panel-intro"><div class="section-kicker">BUILD YOUR ADVANTAGE</div><h3>MY PLAYER</h3></div><div id="playerProfile"></div><p id="appearanceSummary"></p><button id="editAppearance" class="secondary" type="button">EDIT ATHLETE APPEARANCE <span aria-hidden="true">→</span></button><p id="roleHelp"></p><h3 id="developmentTitle"></h3><p id="upgradeNote"></p><div id="upgrades"></div><button id="careerHome" class="secondary quiet-button" type="button">BACK TO HOME</button><small id="saveStatus"></small></div>
+      <nav id="careerTabs" aria-label="Career sections"><button data-tab="Play" aria-selected="true" type="button"><span class="tab-index">01</span> PLAY</button><button data-tab="Recruitment" aria-selected="false" type="button"><span class="tab-index">02</span> RECRUITMENT</button><button data-tab="Player" aria-selected="false" type="button"><span class="tab-index">03</span> MY PLAYER</button></nav>
+    </div>
+  </div>
+
+  <div id="summary" class="overlay" hidden><div class="card result-card"><div class="eyebrow">THE NEXT CHAPTER</div><h2 id="resultTitle">FINAL WHISTLE</h2><p id="resultText"></p><button id="next" class="primary" type="button">CONTINUE <span aria-hidden="true">→</span></button></div></div>
+
+  <footer class="game-footer"><div class="athlete-id"><b id="athlete">J. HAYES</b><span>QB · UNRANKED PROSPECT</span></div><div class="keys"><span><kbd>W A S D</kbd> MOVE</span><span><kbd>SPACE</kbd> SNAP</span><span><kbd>1 2 3</kbd> PASS</span><span><kbd>SHIFT</kbd> SPRINT</span><span><kbd>Q / E</kbd> JUKE</span><span><kbd>C</kbd> CAMERA</span><span><kbd>P</kbd> PAUSE</span></div></footer>
+  <div id="touch" aria-label="Touch gameplay controls"><div class="dpad"><button data-key="w" aria-label="Move forward" type="button">W</button><div><button data-key="a" aria-label="Move left" type="button">A</button><button data-key="s" aria-label="Move backward" type="button">S</button><button data-key="d" aria-label="Move right" type="button">D</button></div></div><div class="actions"><button data-action="snap" type="button">SNAP</button><button data-action="1" type="button">1</button><button data-action="2" type="button">2</button><button data-action="3" type="button">3</button></div></div>
+  <script type="module" src="game.js?v=broadcast12"></script>
+</body>
+</html>
