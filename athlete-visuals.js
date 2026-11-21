@@ -1,5 +1,5 @@
 import {GLTFLoader} from './vendor/GLTFLoader.js';
-import {normalizeProfile,skinTones} from './player-profile.js?v=broadcast12';
+import {normalizeProfile,skinTones} from './player-profile.js?v=online13';
 
 // Original project artwork, authored in Blender and delivered with the game.
 // This glTF uses articulated object pivots, so hierarchy clones can safely share
@@ -7,7 +7,7 @@ import {normalizeProfile,skinTones} from './player-profile.js?v=broadcast12';
 const templates=new WeakMap();
 const shared=new WeakMap();
 const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
-const sourcePath=new URL('./assets/athlete.glb?v=broadcast12',import.meta.url).href;
+const sourcePath=new URL('./assets/athlete.glb?v=online13',import.meta.url).href;
 
 function common(T){
  if(shared.has(T))return shared.get(T);

@@ -1,8 +1,8 @@
-import {updateAthleteVisual} from './athlete-visuals.js?v=broadcast12';
-import {archetypes,createCareer,playerAttributes} from './career.js?v=broadcast12';
-import {normalizeProfile,defaultProfile,skinTones,profileSummary,physique} from './player-profile.js?v=broadcast12';
-import {applyPlayerLook} from './presentation.js?v=broadcast12';
-import {animateAthlete} from './motion.js?v=broadcast12';
+import {updateAthleteVisual} from './athlete-visuals.js?v=online13';
+import {archetypes,createCareer,playerAttributes} from './career.js?v=online13';
+import {normalizeProfile,defaultProfile,skinTones,profileSummary,physique} from './player-profile.js?v=online13';
+import {applyPlayerLook} from './presentation.js?v=online13';
+import {animateAthlete} from './motion.js?v=online13';
 const $=id=>document.getElementById(id);
 const fields=['hometown','state','jersey','heightInches','weightLbs','skinTone','build','helmetFinish','visor','gloves','sleeves','dominantHand'];
 export function createPlayerCreator(T,{renderer,environment,makeAthlete,onSave,onCancel}){

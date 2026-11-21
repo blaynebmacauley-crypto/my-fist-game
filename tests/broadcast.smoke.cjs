@@ -1,7 +1,7 @@
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
 const ORIGIN=process.env.GAME_URL||'http://127.0.0.1:8091';
-const VERSION='broadcast12';
+const VERSION='online13';
 
 (async()=>{
  const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox','--enable-unsafe-swiftshader']});
@@ -22,7 +22,7 @@ const VERSION='broadcast12';
   await page.goto(ORIGIN+'/?v='+VERSION);await ready();let s=await state();
   assert.equal(s.players,22);let models=await imported();assert.equal(models.length,22);
   for(const model of models){assert.equal(model.loaded,true);assert.ok(model.meshes>=20,'human asset contains articulated mesh detail');assert.equal(model.clips.length,6);assert.equal(model.hand,true);assert.notEqual(model.visible,false);}
-  assert.match(await page.locator('#intro').innerText(),/V12/);await assertInside('#start');await assertInside('#careerStart');
+  assert.match(await page.locator('#intro').innerText(),/V13/);await assertInside('#start');await assertInside('#careerStart');
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   console.log('PASS browser home and all 22 detailed imported athletes, original animation clips and hand anchors');
 
@@ -68,7 +68,7 @@ const VERSION='broadcast12';
   s=await state();assert.equal(s.creator.step,2);assert.equal(s.creator.preview.number,28);const angle=s.creator.angle;await page.click('#rotateLeft');assert.notEqual((await state()).creator.angle,angle);await sim(0,page,true);await page.screenshot({path:'/tmp/glory-v12-creator.png',animations:'disabled'});
   await page.click('#creatorNext');assert.equal((await state()).creator.step,3);assert.match(await page.locator('#creatorReview').innerText(),/Avery Rivers/);await page.click('#creatorNext');assert.equal((await state()).mode,'career');
   await page.reload();await ready();await page.click('#careerContinue');await page.click('#careerPlay');s=await state();assert.equal(s.role,'WR');assert.equal(s.profile.jersey,28);assert.equal(s.profile.skinTone,'dark');models=await imported();assert.equal(models[6].profile.skinTone,'dark');assert.equal(models[6].profile.jersey,28);assert.equal(models[6].profile.dominantHand,'left');
-  const visualChecks=await page.evaluate(async()=>{const {players}=await import(document.querySelector('script[type=module]').src),T=await import('./vendor/three.module.js'),{updateAthleteVisual,getAthleteHand}=await import('./athlete-visuals.js?v=broadcast12');const actor=players[6],v=actor.importedVisual,look={jersey:v.materials.get('jersey').color.getHexString(),skin:v.materials.get('skin').color.getHexString(),upper:v.materials.get('upperArm')?.color.getHexString(),forearm:v.materials.get('forearm')?.color.getHexString(),gloves:v.materials.get('gloves').color.getHexString(),teammateForearm:players[7].importedVisual.materials.get('forearm')?.color.getHexString()},hands={};for(const side of ['right','left']){updateAthleteVisual(T,actor,{dt:0,reset:true});for(let i=0;i<15;i++)updateAthleteVisual(T,actor,{dt:.04,speed:6,live:true,ballCarrier:true,handedness:side});hands[side]=actor.root.worldToLocal(getAthleteHand(T,actor,side)).toArray();}updateAthleteVisual(T,actor,{dt:0,reset:true,handedness:'left'});return {look,hands};});
+  const visualChecks=await page.evaluate(async()=>{const {players}=await import(document.querySelector('script[type=module]').src),T=await import('./vendor/three.module.js'),{updateAthleteVisual,getAthleteHand}=await import('./athlete-visuals.js?v=online13');const actor=players[6],v=actor.importedVisual,look={jersey:v.materials.get('jersey').color.getHexString(),skin:v.materials.get('skin').color.getHexString(),upper:v.materials.get('upperArm')?.color.getHexString(),forearm:v.materials.get('forearm')?.color.getHexString(),gloves:v.materials.get('gloves').color.getHexString(),teammateForearm:players[7].importedVisual.materials.get('forearm')?.color.getHexString()},hands={};for(const side of ['right','left']){updateAthleteVisual(T,actor,{dt:0,reset:true});for(let i=0;i<15;i++)updateAthleteVisual(T,actor,{dt:.04,speed:6,live:true,ballCarrier:true,handedness:side});hands[side]=actor.root.worldToLocal(getAthleteHand(T,actor,side)).toArray();}updateAthleteVisual(T,actor,{dt:0,reset:true,handedness:'left'});return {look,hands};});
   assert.equal(visualChecks.look.upper,visualChecks.look.jersey,'long sleeves recolor actual upper-arm materials');assert.equal(visualChecks.look.forearm,visualChecks.look.jersey,'long sleeves reach actual forearms');assert.equal(visualChecks.look.skin,'4d2e23');assert.equal(visualChecks.look.gloves,'111e29');assert.notEqual(visualChecks.look.teammateForearm,visualChecks.look.jersey,'cosmetics do not recolor teammates');
   assert.ok(visualChecks.hands.right[0]>.15&&visualChecks.hands.left[0]<-.15,'carrying hand follows the chosen body side');for(const point of Object.values(visualChecks.hands))assert.ok(point[1]>.9&&point[1]<1.6,'football stays near the actual torso while carrying');assert.ok(Math.abs(visualChecks.hands.right[1]-visualChecks.hands.left[1])<.03,'mirrored carry has consistent anatomy');
   console.log('PASS four-step creator, rotating imported preview, look/gear save and detailed athlete appearance after reload');

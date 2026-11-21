@@ -1,5 +1,5 @@
-import {applyAthleteVisualLook} from './athlete-visuals.js?v=broadcast12';
-import {normalizeProfile,skinTones} from './player-profile.js?v=broadcast12';
+import {applyAthleteVisualLook} from './athlete-visuals.js?v=online13';
+import {normalizeProfile,skinTones} from './player-profile.js?v=online13';
 // Original procedural art for the browser prototype. No external textures/assets.
 const caches=new WeakMap();
 function assets(T){

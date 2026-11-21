@@ -7,7 +7,7 @@
   <meta name="description" content="Play Saturday Lights football in your browser. Create an athlete, take the field, and build your Road to Glory.">
   <link rel="icon" href="data:,">
   <title>Saturday Lights · Road to Glory</title>
-  <link rel="stylesheet" href="style.css?v=broadcast12">
+  <link rel="stylesheet" href="style.css?v=online13">
 </head>
 <body data-screen="intro">
   <div id="loading" role="status"><span class="loading-mark">SL</span><span>Turning on the stadium lights…</span></div>
@@ -42,7 +42,7 @@
   <main id="intro" class="overlay">
     <div class="lobby-grid">
       <section class="lobby-hero" aria-labelledby="lobbyTitle">
-        <div class="eyebrow">BROADCAST UPDATE · V12</div>
+        <div class="eyebrow">MULTIPLAYER UPDATE · V13</div>
         <div class="hero-rule"></div>
         <h1 id="lobbyTitle">EVERY SNAP.<br>YOUR STORY.<br><em>SATURDAY.</em></h1>
         <p class="hero-copy">From an unranked high-school prospect to your college colors. Step onto the field and earn your next chapter.</p>
@@ -60,6 +60,7 @@
         </div>
         <small id="archetypeDescription"></small>
         <button id="start" class="primary" type="button">QUICK PLAY <span aria-hidden="true">→</span></button>
+        <button id="onlineStart" class="secondary" type="button">PLAY WITH A FRIEND <span aria-hidden="true">→</span></button>
         <button id="careerStart" class="secondary" type="button">CREATE YOUR ATHLETE <span aria-hidden="true">→</span></button>
         <button id="careerContinue" class="secondary continue-button" type="button" hidden>CONTINUE CAREER <span aria-hidden="true">→</span></button>
         <div class="asset-state"><span id="assetStatus" role="status">Preparing the stadium and athlete models…</span><button id="assetRetry" type="button" hidden>RETRY ASSETS</button></div>
@@ -99,6 +100,6 @@
 
   <footer class="game-footer"><div class="athlete-id"><b id="athlete">J. HAYES</b><span>QB · UNRANKED PROSPECT</span></div><div class="keys"><span><kbd>W A S D</kbd> MOVE</span><span><kbd>SPACE</kbd> SNAP</span><span><kbd>1 2 3</kbd> PASS</span><span><kbd>SHIFT</kbd> SPRINT</span><span><kbd>Q / E</kbd> JUKE</span><span><kbd>C</kbd> CAMERA</span><span><kbd>P</kbd> PAUSE</span></div></footer>
   <div id="touch" aria-label="Touch gameplay controls"><div class="dpad"><button data-key="w" aria-label="Move forward" type="button">W</button><div><button data-key="a" aria-label="Move left" type="button">A</button><button data-key="s" aria-label="Move backward" type="button">S</button><button data-key="d" aria-label="Move right" type="button">D</button></div></div><div class="actions"><button data-action="snap" type="button">SNAP</button><button data-action="1" type="button">1</button><button data-action="2" type="button">2</button><button data-action="3" type="button">3</button></div></div>
-  <script type="module" src="game.js?v=broadcast12"></script>
+  <script type="module" src="game.js?v=online13"></script>
 </body>
 </html>
